@@ -1,0 +1,22 @@
+-------------------- Create an EKS Cluster
+eksctl create cluster --name my-cluster --region us-east-1 --nodegroup-name my-nodes --node-type t3.small --nodes 1 --nodes-min 1 --nodes-max 2
+aws eks --region us-east-1 update-kubeconfig --name my-cluster
+kubectl config current-context
+kubectl config view
+eksctl delete cluster --name my-cluster --region us-east-1
+-------------------- Configure a Config Map & secret
+cd .\deployment
+kubectl apply -f configmap.yaml
+-------------------- Configure a Database for the Service
+cd .\deployment\database
+kubectl apply -f pvc.yaml
+kubectl apply -f pv.yaml
+kubectl apply -f postgresql-deployment.yaml
+-------------------- Connecting via Port Forwarding
+kubectl apply -f postgresql-service.yaml
+kubectl get svc
+kubectl port-forward service/postgresql-service 5433:5432 &
+export POSTGRES_PASSWORD=$(kubectl get secret --namespace default <SERVICE_NAME>-postgresql -o jsonpath="{.data.postgres-password}" | base64 -d)
+-------------------- Run App
+cd .
+kubectl apply -f coworking.yaml
