@@ -10,8 +10,8 @@ phases:
       - echo Building Docker image...
       - cd analytics
       - docker build -t coworking .
-      - docker tag coworking:latest :$BUILD_NUMBER
+      - docker tag coworking:latest 040055985526.dkr.ecr.us-east-1.amazonaws.com/coworking:$BUILD_NUMBER
   post_build:
     commands:
       - echo Pushing image to ECR...
-      - docker push :$BUILD_NUMBER
+      - docker push 040055985526.dkr.ecr.us-east-1.amazonaws.com/coworking:$BUILD_NUMBER
