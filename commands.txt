@@ -15,8 +15,7 @@ kubectl apply -f postgresql-deployment.yaml
 -------------------- Connecting via Port Forwarding
 kubectl apply -f postgresql-service.yaml
 kubectl get svc
-kubectl port-forward service/postgresql-service 5433:5432 &
-export POSTGRES_PASSWORD=$(kubectl get secret --namespace default <SERVICE_NAME>-postgresql -o jsonpath="{.data.postgres-password}" | base64 -d)
+kubectl port-forward service/postgresql-service 5433:5432 & POSTGRES_PASSWORD=$(kubectl get secret --namespace default udacity-secret -o jsonpath="{.data.postgres-password}" | base64 -d)
 -------------------- Run App
 cd .
 kubectl apply -f coworking.yaml

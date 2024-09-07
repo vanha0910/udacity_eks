@@ -1,5 +1,5 @@
 -------------------- To build the Docker image
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 055656678958.dkr.ecr.us-east-1.amazonaws.com
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 040055985526.dkr.ecr.us-east-1.amazonaws.com
 docker build -t coworking .
-docker tag coworking:latest 055656678958.dkr.ecr.us-east-1.amazonaws.com/coworking:latest
-docker push 055656678958.dkr.ecr.us-east-1.amazonaws.com/coworking:latest
+docker tag coworking:latest 040055985526.dkr.ecr.us-east-1.amazonaws.com/coworking:latest
+docker push 040055985526.dkr.ecr.us-east-1.amazonaws.com/coworking:latest

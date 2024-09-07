@@ -1,0 +1,50 @@
+-------------------- Create an EKS Cluster
+eksctl create cluster --name my-cluster --region us-east-1 --nodegroup-name my-nodes --node-type t3.small --nodes 1 --nodes-min 1 --nodes-max 2
+aws eks --region us-east-1 update-kubeconfig --name my-cluster
+kubectl config current-context
+kubectl config view
+------------------- resume workspace
+aws configure 
+aws eks --region us-east-1 update-kubeconfig --name my-cluster
+kubectl config current-context
+kubectl config view
+kubectl get pods
+kubectl exec -it <pod_name> -- bash
+cd deployment/database
+kubectl apply -f pvc.yaml
+kubectl apply -f pv.yaml
+kubectl apply -f postgresql-deployment.yaml
+kubectl apply -f postgresql-service.yaml
+kubectl get svc
+kubectl port-forward svc/postgresql-service 5433:5432 &
+cd ../../db
+apt update
+apt install postgresql postgresql-contrib
+
+--------- create tables and seed data
+
+export DB_PASSWORD=mypassword
+PGPASSWORD="$DB_PASSWORD" psql --host 127.0.0.1 -U myuser -d mydatabase -p 5433 < 1_create_tables.sql
+
+export DB_PASSWORD=mypassword
+PGPASSWORD="$DB_PASSWORD" psql --host 127.0.0.1 -U myuser -d mydatabase -p 5433 < 2_seed_users.sql
+
+export DB_PASSWORD=mypassword
+PGPASSWORD="$DB_PASSWORD" psql --host 127.0.0.1 -U myuser -d mydatabase -p 5433 < 3_seed_tokens.sql
+
+kubectl port-forward --namespace default svc/postgresql-service 5433:5432 &
+export POSTGRES_PASSWORD=$(kubectl get secret --namespace default udacity-secret -o jsonpath="{.data.postgres-password}" | base64 -d)
+
+------------ create docker image
+cd ../analytics
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 040055985526.dkr.ecr.us-east-1.amazonaws.com
+docker build -t coworking .
+docker tag coworking:latest 040055985526.dkr.ecr.us-east-1.amazonaws.com/coworking:latest
+docker push 040055985526.dkr.ecr.us-east-1.amazonaws.com/coworking:latest
+
+
+export DB_USER=myuser
+export DB_PASSWORD=${POSTGRES_PASSWORD}
+export DB_HOST=127.0.0.1
+export DB_PORT=5433
+export DB_NAME=mydatabase
