@@ -14,4 +14,4 @@ metadata:
   name: udacity-secret
 type: Opaque
 data:
-  DB_PASSWORD: bXlwYXNzd29yZAo=  # Base64 encoded value
+  DB_PASSWORD: bXlwYXNzd29yZAo= # base64 encode for mypassword
